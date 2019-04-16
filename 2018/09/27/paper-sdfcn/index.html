@@ -87,13 +87,6 @@
           
             <li>
           
-            <a href="/categories">Categories</a>
-            
-          </li>
-        
-          
-            <li>
-          
             <a href="/about">About</a>
             
           </li>
@@ -115,7 +108,7 @@
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2018-09-27</span>
       
-        <span id = "post-title-updated">修改于 2019-01-21</span>
+        <span id = "post-title-updated">修改于 2019-04-16</span>
       
       
       <span id = "post-title-categories">分类
@@ -123,13 +116,7 @@
       
         
         
-        <a href="/categories/CVEO论文/">CVEO论文</a>
-      
-        
-          /
-        
-        
-        <a href="/categories/CVEO论文/遥感影像分类/">遥感影像分类</a>
+        <a href="/categories/遥感影像分类/">遥感影像分类</a>
       
       </span>
       
@@ -141,12 +128,6 @@
         
         
         <a href="/tags/深度学习/">深度学习</a>
-      
-        
-          /
-        
-        
-        <a href="/tags/CNN/">CNN</a>
       
         
           /
@@ -182,43 +163,33 @@
 <li>在框架的后处理算法中，采用了重叠简单投票法，有效的抑制了椒盐噪声和块效应。</li>
 </ol>
 <h1 id="2-方法与框架"><a href="#2-方法与框架" class="headerlink" title="2. 方法与框架"></a>2. 方法与框架</h1><p>本文提出的FCN框架结构图如下：</p>
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/framework.jpg" alt="framework.jpg" title=""><br></div> 
-
+<p><img src="/2018/09/27/paper-sdfcn/framework.jpg" alt="本文提出的FCN框架结构"></p>
 <h2 id="2-1-编码器与解码器"><a href="#2-1-编码器与解码器" class="headerlink" title="2.1 编码器与解码器"></a>2.1 编码器与解码器</h2><p>绝大多数FCN网络都分为编码器（encoders）与解码器（decoders）两部分。编码器部分与传统的CNN网络类似，而解码器通常由转置卷积层或上采样层组成。本文的框架中，我们设计夹了一个对称的编码-解码及结构，类似于二维化的栈式自编码器。</p>
 <p>我们框架中编码器由图2中的各种卷积block组成。框架中的解码器采用与SegNet相同的思路,并采用上采样代替转置卷积层，以减少待训练参数数量。</p>
-<h2 id="2-2-卷积Block"><a href="#2-2-卷积Block" class="headerlink" title="2.2 卷积Block"></a>2.2 卷积Block</h2><div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/block.jpg" alt="Block" title="Block"><br></div> 
-
-<p>图2（a）是传统VGG网络中的一个卷积Block，由卷积层、ReLU非线性激活层组成。图2（b）是改进后的结构，它将2个卷积层放到一起，并增加了一个BN（Batch Normalization）层，提高了模型的过拟合能力。而本文采用的图2（c）结构分为主分支与shortcut分支。主分支结构在图2（b）的基础上，进一步减少了参数数量，而分支结构仅为一个$1\times1$的卷积层。最终，两个分支的和就是该block的输出。</p>
+<h2 id="2-2-卷积Block"><a href="#2-2-卷积Block" class="headerlink" title="2.2 卷积Block"></a>2.2 卷积Block</h2><p><img src="/2018/09/27/paper-sdfcn/block.jpg" alt=""></p>
+<p>图2（a）是传统VGG网络中的一个卷积Block，由卷积层、ReLU非线性激活层组成。图2（b）是改进后的结构，它将2个卷积层放到一起，并增加了一个BN（Batch Normalization）层，提高了模型的过拟合能力。而本文采用的图2（c）结构分为主分支与shortcut分支。主分支结构在图2（b）的基础上，进一步减少了参数数量，而分支结构仅为一个1×1的卷积层。最终，两个分支的和就是该block的输出。</p>
 <h2 id="2-3-网络结构"><a href="#2-3-网络结构" class="headerlink" title="2.3 网络结构"></a>2.3 网络结构</h2><p>基于shortcut-block结构，本文设计了两种密集对称连接的FCN网络，SNFCN（the symmetrical normal- shortcut fully convolutional networks）与SDFCN（the symmetrical dense-shortcut fully convolutional networks），如图3所示。</p>
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/structure.png" alt="structure.png" title=""><br></div> 
-
+<p><img src="/2018/09/27/paper-sdfcn/structure.png" alt=""></p>
 <p>SNFCN由输入层、解码器、编码器、Softmax层与输出层组成。而SDFCN在此基础上，增加了编码器与解码器之间的shortcut连接。</p>
-<h2 id="2-4-模型后处理"><a href="#2-4-模型后处理" class="headerlink" title="2.4 模型后处理"></a>2.4 模型后处理</h2><p>在本文语义分割框架中，将原始遥感影像按照一定的重叠度，切成$128\times128$的影像块（patches），通过网络预测（inference）出结果后，再按照投票法进行结果融合。完整过程如图1所示。本文后续实验将根据不同的重叠度来进行定量分析。</p>
+<h2 id="2-4-模型后处理"><a href="#2-4-模型后处理" class="headerlink" title="2.4 模型后处理"></a>2.4 模型后处理</h2><p>在本文语义分割框架中，将原始遥感影像按照一定的重叠度，切成128×128的影像块（patches），通过网络预测（inference）出结果后，再按照投票法进行结果融合。完整过程如图1所示。本文后续实验将根据不同的重叠度来进行定量分析。</p>
 <h1 id="3-实验结果与分析"><a href="#3-实验结果与分析" class="headerlink" title="3. 实验结果与分析"></a>3. 实验结果与分析</h1><p>本文利用<a href="http://www2.isprs.org/commissions/comm3/wg4/semantic-labeling.html" target="_blank" rel="external">ISPRS的2个公开的遥感影像语义分割数据集（Vaihingen数据集和Potsdam数据集）</a>进行实验。本文在实验中采用OA（Overall accuracy）、K（Kappa coefficient）与mIoU（mean intersection over union）作为实验结果的评定指标。</p>
 <h2 id="3-1-Vaihingen数据集实验"><a href="#3-1-Vaihingen数据集实验" class="headerlink" title="3.1 Vaihingen数据集实验"></a>3.1 Vaihingen数据集实验</h2><p>在Vaihingen数据集实验中，先分别测试基于VGG-block与shortcut-block的SNFCN，训练结果如下：</p>
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/loss.png" alt="loss.png" title=""><br></div> 
-
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/t1.png" alt="t1.png" title=""><br></div> 
+<p><img src="/2018/09/27/paper-sdfcn/loss.png" alt="基于VGG-block与shortcut-block的SNFCN测试结果"></p>
+<div align="center"> <img src="/2018/09/27/paper-sdfcn/t1.png" alt=""> </div>
 
 <p>结果表明，基于shortcut-block的网络训练更换稳定，训练效果也更优异。然后在SNFCN与SDFCN的对比实验中，SDFCN则表现更为优秀：</p>
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/compare.png" alt="compare.png" title=""><br></div> 
+<p><img src="/2018/09/27/paper-sdfcn/compare.png" alt="SNFCN与SDFCN的对比实验结果"></p>
+<div align="center"> <img src="/2018/09/27/paper-sdfcn/t2.png" alt=""> </div>
 
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/t2.png" alt="t2.png" title=""><br></div> 
+<div align="center"> <img src="/2018/09/27/paper-sdfcn/t5.png" alt=""> </div>
 
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/t5.png" alt="t5.png" title=""><br></div> 
-
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/result.jpg" alt="result.jpg" title=""><br></div> 
-
-
+<p><img src="/2018/09/27/paper-sdfcn/result.jpg" alt=""> </p>
 <p>实验结果也表明，当重叠度达到75%时，已经能够取得较好分类成果。与FCN-8s/16s/32s、SegNet等经典FCN模型相比，SDFCN也表现得更好。</p>
 <h2 id="3-1-Potsdam数据集实验"><a href="#3-1-Potsdam数据集实验" class="headerlink" title="3.1 Potsdam数据集实验"></a>3.1 Potsdam数据集实验</h2><p>在Potsdam数据集实验中，SNFCN与SDFCN也得到类似结果：</p>
-<div align="center"><br><img src="/2018/09/27/paper-sdfcn/2018/09/27/paper-sdfcn/t6.png" alt="t6.png" title=""><br></div> 
-
-
+<div align="center"> <img src="/2018/09/27/paper-sdfcn/t6.png" alt=""> </div>
 
 <h1 id="4．结论"><a href="#4．结论" class="headerlink" title="4．结论"></a>4．结论</h1><p>综合以上实验结果，本文提出的基于对称全卷积网络的遥感影像语义分割框架在高分辨率遥感影像语义分割任务中，具有可行性，可有效地提高遥感影像分类水平。</p>
 <p><strong>如何引用本文：</strong><br><figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@ARTICLE&#123;chen2018symmetrical, </div><div class="line">author=&#123;G. Chen and X. Zhang and Q. Wang and F. Dai and Y. Gong and K. Zhu&#125;, </div><div class="line">journal=&#123;IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing&#125;, </div><div class="line">title=&#123;Symmetrical Dense-Shortcut Deep Fully Convolutional Networks for Semantic Segmentation of Very-High-Resolution Remote Sensing Images&#125;, </div><div class="line">year=&#123;2018&#125;, </div><div class="line">volume=&#123;11&#125;, </div><div class="line">number=&#123;5&#125;, </div><div class="line">pages=&#123;1633-1644&#125;, </div><div class="line">keywords=&#123;computer vision;geophysical image processing;image segmentation;remote sensing;semantic segmentation;symmetrical dense-shortcut deep fully convolutional networks;Convolutional neural networks (CNN);deep learning (DL);fully convolutional networks (FCN)&#125;, </div><div class="line">doi=&#123;10.1109/JSTARS.2018.2810320&#125;, </div><div class="line">ISSN=&#123;1939-1404&#125;, </div><div class="line">month=&#123;May&#125;,&#125;</div></pre></td></tr></table></figure></p>
-<p>(作者：陈关州)</p>
 
   </article>
   <div class="random-toc-area">
@@ -285,14 +256,6 @@
       <a href="https://coding.net/u/HELOBILLY">
         
           <i class="icon iconfont coding">&#xe607;</i>
-        
-      </a>
-    </li>
-  
-    <li>
-      <a href="https://www.zhihu.com/people/zhu-kun-49/activities">
-        
-          <i class="icon iconfont zhihu">&#xe60b;</i>
         
       </a>
     </li>

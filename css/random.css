@@ -1,8 +1,8 @@
 body {
   background-color: #34495e;
   margin: 0px;
-  font-family: Lato, "Microsoft Jhenghei", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  font-size: 18px;
+  font-family: Lato, "Serif", "Microsoft Jhenghei", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
 }
 @media (max-width: 860px) {
   body {
@@ -10,7 +10,7 @@ body {
   }
 }
 article {
-  line-height: 1.5em;
+  line-height: 2em;
 }
 .highlight {
   line-height: 1.25em;

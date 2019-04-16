@@ -1,0 +1,423 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="HELOBILLY">
+  
+  
+  
+  
+    <meta name="description" content="Symmetrical Dense-Shortcut Deep Fully Convolutional Networks for Semantic Segmentation of Very-High-Resolution Remote Sensing Images 链接Chen G, Zhang X, Wang Q, et al.IEEE Journal of Selected Topics...">
+  
+  <title>基于深度对称密集连接全卷积网络的高分辨率遥感影像语义分割框架 SDFCN [ HELOBILLY ]</title>
+  
+  
+    <link rel="shortcut icon" href="/logo.jpg">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2017/07/11/essay/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        我和这个世界不熟
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/09/28/paper-SiCNN/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        一种基于卷积神经网络（CNN）的高分辨率遥感影像分类方法
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/helobilly.jpg"/>
+          <div id="homelink">HELOBILLY</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">Home</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">Archives</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/works">Works</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">Categories</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">About</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>基于深度对称密集连接全卷积网络的高分辨率遥感影像语义分割框架 SDFCN</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-09-27</span>
+      
+        <span id = "post-title-updated">修改于 2019-01-21</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/CVEO论文/">CVEO论文</a>
+      
+        
+          /
+        
+        
+        <a href="/categories/CVEO论文/遥感影像分类/">遥感影像分类</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/深度学习/">深度学习</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/CNN/">CNN</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/遥感影像分类/">遥感影像分类</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/FCN/">FCN</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/语义分割/">语义分割</a>
+      
+      </span>
+      
+    </p>
+    
+    <blockquote>
+<p><strong>Symmetrical Dense-Shortcut Deep Fully Convolutional Networks for Semantic Segmentation of Very-High-Resolution Remote Sensing Images</strong> <a href="http://ieeexplore.ieee.org/document/8326706/" target="_blank" rel="external">链接</a><br>Chen G, Zhang X, Wang Q, et al.<br>IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, 2018.<code>SCI</code></p>
+</blockquote>
+<p>针对高分辨率遥感影像语义分割问题，本文提出了基于对称全卷积网络的遥感影像语义分割框架，解决了通用深度全卷积网络在大幅遥感影像中因分块而产生的结果不连续和椒盐噪声的问题，提高了分割分类精度。目前该方法已成功应用于地理国情普查与监测应用中。<br><a id="more"></a><br><!-- toc --></p>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>近年来，遥感影像空间分辨率越来越高，面向像素的分类方法（PBIC）与面向对象的分类方法（OBIC）成为了两大高分辨率影像分类的主流框架。然而，PBIC与OBIC框架各自均存在着缺陷。随着深度学习（DL）技术的发展，基于全卷积网络（FCN）的端到端（end-to-end）语义分割算法在高分辨率遥感影像取得了比传统框架更优的影像分类成绩。然而，大多数相关研究需要额外的数据（如DSM等）或者用额外的先验知识（ImageNet预训练权重等）。与此同时，大部分研究也没有讨论如何针对大场景的遥感影像优化计算方法与合并策略（overlay policy）。</p>
+<p>针对上述问题，本文设计了两种基于FCN的语义分割框架：SNFCN与SDFCN。在训练过程中，这两个框架模型直接在ISPRS的语义分割数据集中从0开始训练（from scratch），并且忽略DSM等额外辅助数据。此外，我们还设计并实施了一系列实验，来分析这些框架与合并策略的效率与有效性。本文的贡献主要有以下三点：</p>
+<ol>
+<li>我们设计了SNFCN与SDFCN两个基于密集对称连接结构（dense-shortcut connection structures）的语义分割框架，取得了比传统模型更高的总体分类精度（OA）；</li>
+<li>我们在实验中测试了模型中两种基础结构（VGG与shortcut-block结构）；</li>
+<li>在框架的后处理算法中，采用了重叠简单投票法，有效的抑制了椒盐噪声和块效应。</li>
+</ol>
+<h1 id="2-方法与框架"><a href="#2-方法与框架" class="headerlink" title="2. 方法与框架"></a>2. 方法与框架</h1><p>本文提出的FCN框架结构图如下：</p>
+<div align="center"><br><br></div> 
+
+<h2 id="2-1-编码器与解码器"><a href="#2-1-编码器与解码器" class="headerlink" title="2.1 编码器与解码器"></a>2.1 编码器与解码器</h2><p>绝大多数FCN网络都分为编码器（encoders）与解码器（decoders）两部分。编码器部分与传统的CNN网络类似，而解码器通常由转置卷积层或上采样层组成。本文的框架中，我们设计夹了一个对称的编码-解码及结构，类似于二维化的栈式自编码器。</p>
+<p>我们框架中编码器由图2中的各种卷积block组成。框架中的解码器采用与SegNet相同的思路,并采用上采样代替转置卷积层，以减少待训练参数数量。</p>
+<h2 id="2-2-卷积Block"><a href="#2-2-卷积Block" class="headerlink" title="2.2 卷积Block"></a>2.2 卷积Block</h2><div align="center"><br><br></div> 
+
+<p>图2（a）是传统VGG网络中的一个卷积Block，由卷积层、ReLU非线性激活层组成。图2（b）是改进后的结构，它将2个卷积层放到一起，并增加了一个BN（Batch Normalization）层，提高了模型的过拟合能力。而本文采用的图2（c）结构分为主分支与shortcut分支。主分支结构在图2（b）的基础上，进一步减少了参数数量，而分支结构仅为一个$1\times1$的卷积层。最终，两个分支的和就是该block的输出。</p>
+<h2 id="2-3-网络结构"><a href="#2-3-网络结构" class="headerlink" title="2.3 网络结构"></a>2.3 网络结构</h2><p>基于shortcut-block结构，本文设计了两种密集对称连接的FCN网络，SNFCN（the symmetrical normal- shortcut fully convolutional networks）与SDFCN（the symmetrical dense-shortcut fully convolutional networks），如图3所示。</p>
+<div align="center"><br><br></div> 
+
+<p>SNFCN由输入层、解码器、编码器、Softmax层与输出层组成。而SDFCN在此基础上，增加了编码器与解码器之间的shortcut连接。</p>
+<h2 id="2-4-模型后处理"><a href="#2-4-模型后处理" class="headerlink" title="2.4 模型后处理"></a>2.4 模型后处理</h2><p>在本文语义分割框架中，将原始遥感影像按照一定的重叠度，切成$128\times128$的影像块（patches），通过网络预测（inference）出结果后，再按照投票法进行结果融合。完整过程如图1所示。本文后续实验将根据不同的重叠度来进行定量分析。</p>
+<h1 id="3-实验结果与分析"><a href="#3-实验结果与分析" class="headerlink" title="3. 实验结果与分析"></a>3. 实验结果与分析</h1><p>本文利用<a href="http://www2.isprs.org/commissions/comm3/wg4/semantic-labeling.html" target="_blank" rel="external">ISPRS的2个公开的遥感影像语义分割数据集（Vaihingen数据集和Potsdam数据集）</a>进行实验。本文在实验中采用OA（Overall accuracy）、K（Kappa coefficient）与mIoU（mean intersection over union）作为实验结果的评定指标。</p>
+<h2 id="3-1-Vaihingen数据集实验"><a href="#3-1-Vaihingen数据集实验" class="headerlink" title="3.1 Vaihingen数据集实验"></a>3.1 Vaihingen数据集实验</h2><p>在Vaihingen数据集实验中，先分别测试基于VGG-block与shortcut-block的SNFCN，训练结果如下：</p>
+<div align="center"><br><br></div> 
+
+<div align="center"><br><br></div> 
+
+<p>结果表明，基于shortcut-block的网络训练更换稳定，训练效果也更优异。然后在SNFCN与SDFCN的对比实验中，SDFCN则表现更为优秀：</p>
+<div align="center"><br><br></div> 
+
+<div align="center"><br><br></div> 
+
+<div align="center"><br><br></div> 
+
+<div align="center"><br><br></div> 
+
+
+<p>实验结果也表明，当重叠度达到75%时，已经能够取得较好分类成果。与FCN-8s/16s/32s、SegNet等经典FCN模型相比，SDFCN也表现得更好。</p>
+<h2 id="3-1-Potsdam数据集实验"><a href="#3-1-Potsdam数据集实验" class="headerlink" title="3.1 Potsdam数据集实验"></a>3.1 Potsdam数据集实验</h2><p>在Potsdam数据集实验中，SNFCN与SDFCN也得到类似结果：</p>
+<div align="center"><br><br></div> 
+
+
+
+<h1 id="4．结论"><a href="#4．结论" class="headerlink" title="4．结论"></a>4．结论</h1><p>综合以上实验结果，本文提出的基于对称全卷积网络的遥感影像语义分割框架在高分辨率遥感影像语义分割任务中，具有可行性，可有效地提高遥感影像分类水平。</p>
+<p><strong>如何引用本文：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@ARTICLE&#123;chen2018symmetrical, </div><div class="line">author=&#123;G. Chen and X. Zhang and Q. Wang and F. Dai and Y. Gong and K. Zhu&#125;, </div><div class="line">journal=&#123;IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing&#125;, </div><div class="line">title=&#123;Symmetrical Dense-Shortcut Deep Fully Convolutional Networks for Semantic Segmentation of Very-High-Resolution Remote Sensing Images&#125;, </div><div class="line">year=&#123;2018&#125;, </div><div class="line">volume=&#123;11&#125;, </div><div class="line">number=&#123;5&#125;, </div><div class="line">pages=&#123;1633-1644&#125;, </div><div class="line">keywords=&#123;computer vision;geophysical image processing;image segmentation;remote sensing;semantic segmentation;symmetrical dense-shortcut deep fully convolutional networks;Convolutional neural networks (CNN);deep learning (DL);fully convolutional networks (FCN)&#125;, </div><div class="line">doi=&#123;10.1109/JSTARS.2018.2810320&#125;, </div><div class="line">ISSN=&#123;1939-1404&#125;, </div><div class="line">month=&#123;May&#125;,&#125;</div></pre></td></tr></table></figure></p>
+<p>(作者：陈关州)</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-简介"><span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-方法与框架"><span class="toc-text">2. 方法与框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-编码器与解码器"><span class="toc-text">2.1 编码器与解码器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-卷积Block"><span class="toc-text">2.2 卷积Block</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-网络结构"><span class="toc-text">2.3 网络结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-模型后处理"><span class="toc-text">2.4 模型后处理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-实验结果与分析"><span class="toc-text">3. 实验结果与分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Vaihingen数据集实验"><span class="toc-text">3.1 Vaihingen数据集实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Potsdam数据集实验"><span class="toc-text">3.1 Potsdam数据集实验</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4．结论"><span class="toc-text">4．结论</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2017/07/11/essay/" class="prev">&larr; 上一篇 我和这个世界不熟</a>
+  
+
+  
+
+  
+    <a href="/2018/09/28/paper-SiCNN/" class="next">下一篇 一种基于卷积神经网络（CNN）的高分辨率遥感影像分类方法 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by HELOBILLY using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/helobilly.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/HELOBILLY">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/HELOBILLY">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://www.zhihu.com/people/zhu-kun-49/activities">
+        
+          <i class="icon iconfont zhihu">&#xe60b;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

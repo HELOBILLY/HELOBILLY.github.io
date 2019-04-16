@@ -1,0 +1,432 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="HELOBILLY">
+  
+  
+  
+  
+    <meta name="description" content="Change detection based on Faster R-CNN for high-resolution remote sensing images 链接 · PDFWang Q, Zhang X, Chen G, et al.Remote Sensing Letters. 2018, 9(10): 923-932.SCI
+
+变化检测在遥感影像解译中具有重要的意义，高分辨率遥感影...">
+  
+  <title>基于Faster R-CNN的高分辨率遥感影像变化检测 [ HELOBILLY ]</title>
+  
+  
+    <link rel="shortcut icon" href="/logo.jpg">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/09/29/paper-kdcnn/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        基于知识蒸馏的小规模遥感影像场景分类网络模型训练方法
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/04/02/paper-DM-FPN/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        基于 Double Multi-Scale Feature Pyramid Network (DM-FPN) 的高分辨率遥感影像地理空间目标检测
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/helobilly.jpg"/>
+          <div id="homelink">HELOBILLY</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">Home</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">Archives</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/works">Works</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">Categories</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">About</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>基于Faster R-CNN的高分辨率遥感影像变化检测</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-10-18</span>
+      
+        <span id = "post-title-updated">修改于 2019-01-21</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/CVEO论文/">CVEO论文</a>
+      
+        
+          /
+        
+        
+        <a href="/categories/CVEO论文/遥感影像变化检测/">遥感影像变化检测</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/深度学习/">深度学习</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/CNN/">CNN</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Faster-RCNN/">Faster RCNN</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/遥感影像变化检测/">遥感影像变化检测</a>
+      
+      </span>
+      
+    </p>
+    
+    <blockquote>
+<p><strong>Change detection based on Faster R-CNN for high-resolution remote sensing images</strong> <a href="https://www.tandfonline.com/doi/full/10.1080/2150704X.2018.1492172" target="_blank" rel="external">链接</a> · <a href="https://www.tandfonline.com/doi/pdf/10.1080/2150704X.2018.1492172?needAccess=true" target="_blank" rel="external">PDF</a><br>Wang Q, Zhang X, Chen G, et al.<br>Remote Sensing Letters. 2018, 9(10): 923-932.<code>SCI</code></p>
+</blockquote>
+<p>变化检测在遥感影像解译中具有重要的意义，高分辨率遥感影像极大地提高了土地利用/覆盖变化（LU/LC）监测的能力。但在实际应用中，针对高分辨率遥感影像的变化检测，传统方法过于耗时且需要烦琐的人工干预。近年来，深度学习在自然影像目标检测、语音识别、人脸识别等领域得到了广泛的应用，并取得了巨大的成功。目前已经有一些学者将深度学习应用于遥感影像分类和变化检测，但较少应用于高分辨率遥感影像变化检测。在这篇文章里，我们提出基于区域的卷积神经网络并将其应用于高分辨率遥感影像变化检测，同时与传统变化检测方法，以及其他的基于深度学习的方法进行比较，我们提出的方法具有更高的整体精度和Kappa系数，特别是我们的方法可以减少大量伪变化。<br><a id="more"></a><br><!-- toc --></p>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>变化检测是通过在不同时间观察某一物体或现象的状态来识别其状态差异的过程。在遥感应用中，我们通过影像处理和数学模型对不同时期的遥感影像与相关数据的变化进行比较分析。近年来，变化检测在土地资源管理、农林监测、自然灾害监测与评估等领域有重要应用。利用遥感影像检测地表变化的主要任务是回答三个问题<sup><a href="#footnote1">1</a></sup>:</p>
+<ul>
+<li>地表是否发生变化?</li>
+<li>发生了哪些变化?</li>
+<li>变化轨迹是怎样的?</li>
+</ul>
+<p>本文主要讨论基于两时项遥感影像的变化检测，因此不涉及变化轨迹。许多学者提出了不同的遥感影像变化检测方法，主要包括代数、分类、变换、高级模型、地理信息系统（GIS）方法、视觉分析等<sup><a href="#footnote2">2</a></sup>。</p>
+<p>随着遥感影像变化检测的应用越来越广泛，一些传统的方法非常有限，主要体现在两个方面。首先,随着遥感数据源的增多，遥感影像空间分辨率的提高以及地物细节的丰富,传统的方法,如影像代数,很容易受季节变化，卫星传感器、太阳高程和大气条件的影响从而降低变化检测精度。其次，虽然一些方法，如基于对象的影像分析和变换，通过提取几何特征和纹理特征来减少伪变化，但它需要大量的计算时间和繁琐的手工程序。</p>
+<p>深度学习（Deep learning, DL）可以从原始数据中自动学习深度特征，从而适应遥感影像变化检测的不同情况，避免了传统方法的许多缺点。近年来，深度学习在遥感影像变化检测中得到了广泛的应用。基于区域的快速卷积神经网络（Faster Regional Convolutional Neural Network, <a href="https://arxiv.org/abs/1506.01497" target="_blank" rel="external">Faster R-CNN</a>）是一种基于区域的目标检测方法，通过这种方法可以了解目标的几何特征和上下文空间特征。在自然影像目标检测中，Faster R-CNN在复杂场景中实现了快速提取和目标识别。我们尝试将该方法应用于高分辨率遥感影像的变化检测，将遥感影像中的“变化”区域作为待检测目标，而“未变化”区域作为背景。综上所述，本文所做工作有以下几点：</p>
+<blockquote>
+<ul>
+<li>提出了一种基于Faster R-CNN的高分辨率遥感影像变化检测框架</li>
+<li>提出了两种基于Faster R-CNN的高分辨率遥感影像变化模型，并与传统方法和其他基于深度学习的方法进行了比较。</li>
+</ul>
+</blockquote>
+<h1 id="2-方法与框架"><a href="#2-方法与框架" class="headerlink" title="2. 方法与框架"></a>2. 方法与框架</h1><h2 id="2-1-训练设置"><a href="#2-1-训练设置" class="headerlink" title="2.1 训练设置"></a>2.1 训练设置</h2><p>本文提出的遥感影像变化检测框架基于<a href="https://arxiv.org/abs/1506.01497" target="_blank" rel="external">Faster R-CNN</a>模型，共享卷积层由预训练的ResNet-50模型初始化，其他层随机初始化。训练样本来自两个不同时间段和不同传感器的真彩色遥感图像，并将这些影像统一坐标参考系统，重新采样到0.5m的空间分辨率。根据实验任务，我们手工选择了三种变化样本，从植被到建筑，从裸地到建筑，从农田到道路。每一种类型都有大约500个样本，大多数样本的长度和宽度都在200-800像素之间，并且样本大小不一致。此外，我们通过数据增强的方式增加了样本。数据增强是一种提高网络通用性的方法，不需要额外的训练时间。</p>
+<h2 id="2-2-基于Faster-RCNN的两种变化检测框架"><a href="#2-2-基于Faster-RCNN的两种变化检测框架" class="headerlink" title="2.2 基于Faster RCNN的两种变化检测框架"></a>2.2 基于Faster RCNN的两种变化检测框架</h2><p>首先对两幅不同时相的图像进行预处理，以第二幅影像作为基准，将地理坐标系统和图像空间分辨率进行统一。同时提出了两种基于Faster R-CNN的遥感影像变化检测模型。第一个是合并两个不同时间的图像，然后将它们送入Faster R-CNN中进行变化检测（MFRCNN）。另一种方法是用后一时期的影像减去前一时期的影像，得到差分图像，然后送入到Faster R-CNN进行变化检测（SFRCNN）。两种模型的训练样本同步处理。得到的结果是一系列的矩形区域，然后合并相同变化类型的矩形相交区域，最后，利用snakes模型对变化区域进行分割。</p>
+<h1 id="3-实验"><a href="#3-实验" class="headerlink" title="3. 实验"></a>3. 实验</h1><p>为了评估该框架的有效性，我们在两个多时相和多空间分辨率的数据集上进行实验。随后将变化检测精度与以往的方法进行比较，包括变化向量分析<a href="https://ieeexplore.ieee.org/document/4039609" target="_blank" rel="external">CVA</a>、基于对象的变化检测方法<a href="https://www.sciencedirect.com/science/article/pii/S0034425706000344" target="_blank" rel="external">OBCD</a>、分类后比较<a href="https://www.researchgate.net/publication/254314212_Potential_effects_in_multi-resolution_post-classification_change_detection" target="_blank" rel="external">PCC</a>。同时，我们比较了其他基于深度学习的方法，包括堆叠式自动编码器<a href="https://www.researchgate.net/publication/200744514_Greedy_layer-wise_training_of_deep_networks?ev=prf_cit" target="_blank" rel="external">SAE</a>，<a href="http://xueshu.baidu.com/s?wd=paperuri%3A%28e991010ea7da9dd518e638182ffcdd77%29&amp;filter=sc_long_sign&amp;tn=SE_xueshusource_2kduw22v&amp;sc_vurl=http%3A%2F%2Fwww.mdpi.com%2F2072-4292%2F7%2F11%2F14680&amp;ie=utf-8&amp;sc_us=6770957953228262529" target="_blank" rel="external">CNN</a>和<a href="https://www.researchgate.net/publication/291172413_Deep_Convolutional_and_LSTM_Recurrent_Neural_Networks_for_Multimodal_Wearable_Activity_Recognition" target="_blank" rel="external">LSTM</a>。其基本过程是先合并两时相图像，然后对每个位置像素选择大小为3×3的邻域，得到长度为54的一维向量，最后送入到相应的深度学习模型进行变化检测。</p>
+<h2 id="3-1-数据描述"><a href="#3-1-数据描述" class="headerlink" title="3.1 数据描述"></a>3.1 数据描述</h2><p>本文选择两组数据进行实验，第一组数据的两时相影像取自于安徽省遥感影像。数据覆盖范围为1669m×1368m,主要地物类别包括建筑物、荒地、植被和道路。如图2所示，其中图2(a)表示前一时相的影像，图2(b)表示后一时期的影像，图2(c)表示变化区域的地面真实值，红色和黑色分别表示变化的区域和不变的区域：</p>
+<div align="center"><br><br></div> 
+
+<center>图2：安徽省变化检测影像及变化区域地面真实值</center>
+
+<p>第二组数据的两时相影像取自于湖北省遥感影像。数据覆盖范围为615m×586m,主要地物类别包括建筑物、种植农田、植被和道路。有三种主要形式的变化：</p>
+<ul>
+<li>A变化，从植被变化为建筑物，如图3(c)红色区域所示</li>
+<li>B变化，从荒地变化为建筑物，如图3(c)黄色区域所示</li>
+<li>C变化，从农田变化为道路，如图3(c)蓝色区域所示</li>
+</ul>
+<div align="center"><br><br></div> 
+
+<center>图3：湖北省变化检测影像及变化区域地面真实值</center>
+
+<h2 id="3-2-评价指标"><a href="#3-2-评价指标" class="headerlink" title="3.2 评价指标"></a>3.2 评价指标</h2><p>变化检测的结果也可以看作是一种特殊的分类结果。检测到是否变化可以看作是两个分类问题，从一个到另一个的检测变化可以看作是一个多类分类问题。最常见的精度评估指标包括总体精度(OA)、生产者精度(PA)、用户精度(UA)和kappa系数，本文采用这些指标来评估准确性。</p>
+<h2 id="3-3-实验结果"><a href="#3-3-实验结果" class="headerlink" title="3.3 实验结果"></a>3.3 实验结果</h2><p>在第一组实验中，如图4所示，其中图4(a)，4(b)，4(c)分别表示利用CVA，OBCB和PPC方法得到的变化检测结果。图4(d)，4(e)，4(f)分别表示利用深度学习的方法如SAE，CNN和LSTM得到的变化检测结果。基本本文所提出的MFRCNN和SFRCNN得到的变化检测结果分别如图4(g)，4(h)所示。由于传感器的差异，前三种传统方法与后五种基于深度学习的方法相比有更多的错误检测。与其他三种基于深度学习的方法相比，我们提出的方法进一步减少了伪变化，特别是在图4的左下方。</p>
+<div align="center"><br><br></div> 
+
+<center>图4：第一组数据变化检测结果图(a)CVA，(b)PPC，(c)OBCD，(d)SAE，(e)CNN，(f)LSTM，(g)MFRCNN，(h)SFRCNN</center>
+
+<p>不同方法的PA、UA、OA、Kappa系数的定量分析如表1所示，基于深度学习的方法比传统方法获得了更好的变化检测结果。基于Faster-RCNN的两种方法提高了OA和kappa系数，其中SFRCNN的性能更好。</p>
+<center>表1：第一组数据变化检测结果评价指标</center>
+
+<div align="center"><br><br></div> 
+
+<p>在第二个实验中，我们需要检测土地利用变化的类型。因此，我们放弃了繁琐的传统方法，直接比较基于深度学习的方法。图5(a),图5(b)和图5(c)分别表示利用SAE，LSTM和CNN得到的结果。基于Faster-RCNN的变化检测结果如图5(d)和图5(e)所示。根据表2精度比较结果，基于FasterRCNN的OA和kappa系数均有提升，其中SFRCNN的性能更好。</p>
+<div align="center"><br><br></div> 
+
+<center>图5：第二组数据变化检测结果图(a)SAE，(b)CNN，(c)LSTM，(d)MFRCNN，(e)SFRCNN</center>
+
+<center>表2：第二组数据变化检测结果评价指标</center>
+
+<div align="center"><br><br></div> 
+
+<h1 id="4．分析与结论"><a href="#4．分析与结论" class="headerlink" title="4．分析与结论"></a>4．分析与结论</h1><p>本文采用Faster R-CNN进行高分辨率遥感影像变化检测，这种基于区域的CNN方法可以提取二维深度特征。与以往基于深度学习的方法相比，该方法可以进一步提高变化检测的准确率。另外，我们提出了两种基于Faster R-CNN的变化检测模型:MFRCNN和SFRCNN。两个实验表明SFRCNN的效果比MFRCNN要好得多。这说明虽然基于深度学习的方法可以提取更多的特征，但是图像差分法可以提高其准确率，当然MFRCNN框架更简单也更自动化。</p>
+<p><strong>如何引用本文：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@article&#123;wang2018change,</div><div class="line">author = &#123;Qing Wang and Xiaodong Zhang and Guanzhou Chen and Fan Dai and Yuanfu Gong and Kun Zhu&#125;,</div><div class="line">title = &#123;Change detection based on Faster R-CNN for high-resolution remote sensing images&#125;,</div><div class="line">journal = &#123;Remote Sensing Letters&#125;,</div><div class="line">volume = &#123;9&#125;,</div><div class="line">number = &#123;10&#125;,</div><div class="line">pages = &#123;923-932&#125;,</div><div class="line">year  = &#123;2018&#125;,</div><div class="line">publisher = &#123;Taylor &amp; Francis&#125;,</div><div class="line">doi = &#123;10.1080/2150704X.2018.1492172&#125;,</div></pre></td></tr></table></figure></p>
+<hr>
+<p><a name="footnote1">1</a> Zhou, Q. M. 2011. “Review on Change Detection Using Multi-Temporal Remotely Sensed Imagery.” Geomatics World 18 (2): 23–28.<br><a name="footnote2">2</a> Lu, D., P. Mausel, E. BrondZio, and E. Moran. 2004. “Change Detection Techniques.” International Journal of Remote Sensing 25 (12): 2365–2401. doi:10.1080/0143116031000139863.</p>
+<p>(作者：王庆，陈关州，朱坤)</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-简介"><span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-方法与框架"><span class="toc-text">2. 方法与框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-训练设置"><span class="toc-text">2.1 训练设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-基于Faster-RCNN的两种变化检测框架"><span class="toc-text">2.2 基于Faster RCNN的两种变化检测框架</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-实验"><span class="toc-text">3. 实验</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-数据描述"><span class="toc-text">3.1 数据描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-评价指标"><span class="toc-text">3.2 评价指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-实验结果"><span class="toc-text">3.3 实验结果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4．分析与结论"><span class="toc-text">4．分析与结论</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/09/29/paper-kdcnn/" class="prev">&larr; 上一篇 基于知识蒸馏的小规模遥感影像场景分类网络模型训练方法</a>
+  
+
+  
+
+  
+    <a href="/2019/04/02/paper-DM-FPN/" class="next">下一篇 基于 Double Multi-Scale Feature Pyramid Network (DM-FPN) 的高分辨率遥感影像地理空间目标检测 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by HELOBILLY using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/helobilly.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/HELOBILLY">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/HELOBILLY">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://www.zhihu.com/people/zhu-kun-49/activities">
+        
+          <i class="icon iconfont zhihu">&#xe60b;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

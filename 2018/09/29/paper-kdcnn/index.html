@@ -1,0 +1,435 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="HELOBILLY">
+  
+  
+  
+  
+    <meta name="description" content="Training Small Networks for Scene Classification of Remote Sensing Images via Knowledge Distillation 链接 · PDFChen G, Zhang X, Tan X, et al.Remote Sensing 2018, 10(5), 719.SCI
+
+场景分类是遥感图像分析领域中的一项基本任务...">
+  
+  <title>基于知识蒸馏的小规模遥感影像场景分类网络模型训练方法 [ HELOBILLY ]</title>
+  
+  
+    <link rel="shortcut icon" href="/logo.jpg">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/09/28/paper-SiCNN/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        一种基于卷积神经网络（CNN）的高分辨率遥感影像分类方法
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/10/18/paper-fasterrcnn4cd/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        基于Faster R-CNN的高分辨率遥感影像变化检测
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/helobilly.jpg"/>
+          <div id="homelink">HELOBILLY</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">Home</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">Archives</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/works">Works</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">Categories</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">About</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>基于知识蒸馏的小规模遥感影像场景分类网络模型训练方法</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-09-29</span>
+      
+        <span id = "post-title-updated">修改于 2019-01-21</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/CVEO论文/">CVEO论文</a>
+      
+        
+          /
+        
+        
+        <a href="/categories/CVEO论文/遥感影像分类/">遥感影像分类</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/深度学习/">深度学习</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/CNN/">CNN</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/遥感影像分类/">遥感影像分类</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/模型压缩/">模型压缩</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/场景分类/">场景分类</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/知识蒸馏/">知识蒸馏</a>
+      
+      </span>
+      
+    </p>
+    
+    <blockquote>
+<p><strong>Training Small Networks for Scene Classification of Remote Sensing Images via Knowledge Distillation</strong> <a href="http://www.mdpi.com/2072-4292/10/5/719/htm" target="_blank" rel="external">链接</a> · <a href="http://www.mdpi.com/2072-4292/10/5/719/pdf" target="_blank" rel="external">PDF</a><br>Chen G, Zhang X, Tan X, et al.<br>Remote Sensing 2018, 10(5), 719.<code>SCI</code></p>
+</blockquote>
+<p>场景分类是遥感图像分析领域中的一项基本任务，其目的是识别遥感影像图斑的土地覆盖类型。基于深度神经网络的算法（如VGG-Net、ResNet、DenseNet）在场景分类中得到了广泛的应用，并取得了显著的性能，但以上深度模型方法会消耗大量的计算资源与训练时间，不适用于嵌入式设备或星上处理等特殊情况。因此，本文将目前主流的模型压缩方法——知识蒸馏框架引入遥感影像场景分类任务中，以提高小规模网络模型的分类水平。知识蒸馏方法关键在于，使小规模的学生模型的高温softmax输出与大规模的教师模型对应的高温输出相匹配。本文在四个公开的遥感场景分类数据集（AID数据集、UCMerced数据集、NWPU-RESISC数据集和EuroSAT数据集）展开实验，以评估知识蒸馏训练方法的性能。结果表明，本文方法在四个数据集上不同程度地提高了小规模网络模型的分类水平。此外，本文还探究了当数据集样本数量较少或类别不平衡等情况下学生模型的表现，进一步验证知识蒸馏方法在低分辨率遥感影像、遥感地物类别较多、遥感影像数量较少等情况下的适用性与可行性。</p>
+<a id="more"></a>
+<!-- toc -->
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>随着遥感技术的快速发展，大量算法被提出用于自动化处理大规模的对地观测数据。场景分类作为遥感影像处理的基本任务之一，用以识别遥感影像图斑的土地覆盖类型，在众多遥感应用如土地覆盖利用调查、农业、林业与水文等都有着重要的意义。</p>
+<p>近年来，深度学习技术，特别是卷积神经网络（CNNs）模型，在图像识别、语音识别、语义分割、目标检测、自然语言处理等领域中均表现出优异的性能。计算机视觉（CV）领域中的许多经典的深度学习模型被验证能有效应用于遥感影像场景分类任务中。区别于依赖手工特征提取的浅层模型和初级方法，深度卷积网络可通过从大型训练数据集中学习深度视觉特征来处理更复杂的场景并获得更高的准确度。</p>
+<p>然而，深层卷积神经网络包含更多的训练参数，它们在训练和预测上需要花费更多的计算资源与时间，不适用于应用在嵌入式设备或在轨处理等特定情况下。相比之下，规模小而浅层的模型速度快，占用空间小，直接利用样本数据训练不足以得到准确的结果。</p>
+<p>在这种情况下，学界提出了模型压缩技术，用来小型化大型深度学习模型。模型压缩技术通过学习性能更好但规模更大的模型，或通过简化深层网络模型的结构来改进浅层模型的性能。主流的模型压缩技术可分为以下三类：网络修剪，网络量化和师生训练（TST）。网络修剪，通过去除基于特定标准下不太重要的神经元或权重来减小网络规模；网络量化试图降低权重或特征的精度；师生训练方法通过学习某些特定层的分布或输出，将教师模型的知识传授给学生模型<sup><a href="#footnote1">1</a></sup>。</p>
+<p>知识蒸馏（KD）是一种师生训练方法。知识蒸馏方法关键在于，使小规模的学生模型的高温softmax输出与大规模的教师模型对应的高温输出相匹配。在本文中，我们首次将知识蒸馏引入到遥感场景分类中，以提高小型和浅层网络模型的性能。然后，我们对几个公共数据集进行了实验以验证知识蒸馏的有效性，并进行定量分析以探索最佳的参数设置，同时还将讨论知识蒸馏在不同类型数据集上的性能。此外，我们测试了在没有某种类型的训练样本或缺乏足够的训练数据集的情况下学生模型是否仍然可以从教师模型中提炼知识。</p>
+<h1 id="2-方法"><a href="#2-方法" class="headerlink" title="2. 方法"></a>2. 方法</h1><h2 id="2-1-师生训练方法"><a href="#2-1-师生训练方法" class="headerlink" title="2.1 师生训练方法"></a>2.1 师生训练方法</h2><p>师生训练方法（TST）是主流模型压缩方法之一。在师生训练中，规模较大的预训练模型被视为教师模型，未经训练的规模较小的模型视作学生模型。学生模型不仅从真实样本中进行学习，而且还将其输出与教师模型的输出相匹配。这是因为softmax层的输出（软目标）包含的信息多于单标记的训练样本（硬目标）。一般的师生训练过程首先直接在数据集上训练规模较大的模型，然后通过使用小批量随机梯度下降（MSGD）方法最小化损失函数来训练学生模型。</p>
+<p>除了以上方法外，该领域还提出了其他师生训练的方法。Huang. Z提出了在两个网络之间匹配神经元选择性模式（NST）分布的想法，通过最小化最大均值差异（MMD），并设计新的损失函数以匹配这些分布。FitNet通过学习教师模型隐藏层的分布，将宽网和浅网络压缩成更薄但更深的网络。Yim提出传递从网络层与层之间提取的知识，计算特征之间的内积并生成到FSP矩阵中。Chen. T通过将知识从网络传输到新的更大的网络来加速对更大网络的训练。Lopez-Paz, D.将知识蒸馏与特权信息结合起来，推导出一种广义知识蒸馏。</p>
+<h2 id="2-2-知识蒸馏框架"><a href="#2-2-知识蒸馏框架" class="headerlink" title="2.2 知识蒸馏框架"></a>2.2 知识蒸馏框架</h2><h3 id="2-2-1-来源于概率分布间的知识"><a href="#2-2-1-来源于概率分布间的知识" class="headerlink" title="2.2.1 来源于概率分布间的知识"></a>2.2.1 来源于概率分布间的知识</h3><p>一般情况下的softmax输出为一个只有0/1值的向量，此时温度值T为1。随着温度值逐渐增大，各类的类别概率分布趋向一致，如图1所示，此时其他类别的概率分布信息可以为训练提供额外的监督信息。知识蒸馏方法不仅利用地面真实数据对学生模型进行训练，还实现了从教师模型的高温softmax输出获取有用的类别信息，提高学生模型的分类水平。</p>
+<div align="center"><br><br></div> 
+
+<h3 id="2-2-2-知识蒸馏训练流程"><a href="#2-2-2-知识蒸馏训练流程" class="headerlink" title="2.2.2 知识蒸馏训练流程"></a>2.2.2 知识蒸馏训练流程</h3><p>知识蒸馏实验流程如图2所示:  </p>
+<blockquote>
+<ol>
+<li>首先利用数据对大规模的教师模型进行训练，保留训练效果最好的模型；  </li>
+<li>利用教师模型的高温softmax输出和地面真实数据分别与小规模学生模型的高温softmax输出和一般softmax输出进行匹配，训练学生模型并保留训练效果最好的模型；</li>
+<li>最后利用已训练的学生模型输出一般softmax结果进行分类。</li>
+</ol>
+</blockquote>
+<div align="center"><br><br></div> 
+
+<h1 id="3-实验结果与分析"><a href="#3-实验结果与分析" class="headerlink" title="3. 实验结果与分析"></a>3. 实验结果与分析</h1><p>本文利用四个公开的遥感影像场景分类数据集（AID数据集、UCMerced数据集、NWPU-RESISC数据集、EuroSAT数据集）开展知识蒸馏实验，以验证知识蒸馏方法在遥感影像场景分类任务中的适用性与可行性。本文在实验中引入了OA（Overall accuracy）、K（Kappa coefficient）、P（Precision）、R（Recall）、F1（F1-score）和FPS（Frames per second）作为实验结果的评定指标。</p>
+<h1 id="3-1-在AID数据集上的实验"><a href="#3-1-在AID数据集上的实验" class="headerlink" title="3.1 在AID数据集上的实验"></a>3.1 在AID数据集上的实验</h1><p>本文首先在AID数据集上开展实验，验证知识蒸馏方法的适用性，并探究了温度值（T）与损失比重值（Lambda）对精度的影响，结果如表3所示。</p>
+<div align="center"><br><br></div> 
+
+<p>实验进一步地验证了知识蒸馏方法在只有少量数据的情况与缺乏一类数据的情况下，依旧能提升学生模型的分类水平。结果如表4与表5所示。</p>
+<div align="center"><br><br></div> 
+
+<p>从表4可以得出，小数据集可以缩短训练时间，但训练结果较差，但在这种情况下，KD训练仍比直接训练效果更好。</p>
+<div align="center"><br><br></div> 
+
+<p>从表5来看，在没有“机场”样本的情况下，KD训练过程仍然比完整数据集的直接训练获得更好的F1值。从蒸馏模型的角度来看，在训练时从未见过“机场”样本。然而，它具有高精度，与低召回率。如果我们通过知识蒸馏继续微调学生模型上未标记数据，机场的F1值可从0.3717增加到0.7391。</p>
+<p>在AID数据集上，本小组还探究了场景类别数与最优温度值的关系。结果如表6所示，随着数据集类别数的减少，学生模型达到最佳分类水平的最优温度值逐渐增大。</p>
+<div align="center"><br><br></div> 
+
+<h1 id="3-2-在其他数据集上的实验"><a href="#3-2-在其他数据集上的实验" class="headerlink" title="3.2 在其他数据集上的实验"></a>3.2 在其他数据集上的实验</h1><p>本文还在UCMerced数据集、NWPU-RESISC数据集、EuroSAT数据集三个数据集上进行实验，进一步验证知识蒸馏方法在低分辨率遥感影像、遥感地物类别较多、遥感影像数量较少等情况下的适用性与可行性，结果如表7-表9所示。</p>
+<div align="center"><br><br></div> 
+
+<div align="center"><br><br></div> 
+
+<div align="center"><br><br></div> 
+
+
+<h1 id="4．结论"><a href="#4．结论" class="headerlink" title="4．结论"></a>4．结论</h1><p>综合以上实验结果，可见知识蒸馏方法在遥感影像场景分类任务中具有可行性，可有效地提高小规模网络模型的分类水平。</p>
+<p><strong>如何引用本文：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@Article&#123;chen2018training,</div><div class="line">AUTHOR = &#123;Chen, Guanzhou and Zhang, Xiaodong and Tan, Xiaoliang and Cheng, Yufeng and Dai, Fan and Zhu, Kun and Gong, Yuanfu and Wang, Qing&#125;,</div><div class="line">TITLE = &#123;Training Small Networks for Scene Classification of Remote Sensing Images via Knowledge Distillation&#125;,</div><div class="line">JOURNAL = &#123;Remote Sensing&#125;,</div><div class="line">VOLUME = &#123;10&#125;,</div><div class="line">YEAR = &#123;2018&#125;,</div><div class="line">NUMBER = &#123;5&#125;,</div><div class="line">ARTICLE-NUMBER = &#123;719&#125;,</div><div class="line">URL = &#123;http://www.mdpi.com/2072-4292/10/5/719&#125;,</div><div class="line">ISSN = &#123;2072-4292&#125;,</div><div class="line">DOI = &#123;10.3390/rs10050719&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<hr>
+<p><a name="footnote1">1</a> 师生训练方法易与迁移学习相混淆。在迁移学习中，我们首先在某个数据集上训练基础模型，然后将学习到的特征转移到另一个目标网络，以便在不同的数据集和任务上进行训练。</p>
+<p>(作者：谭效良，陈关州)</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-简介"><span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-方法"><span class="toc-text">2. 方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-师生训练方法"><span class="toc-text">2.1 师生训练方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-知识蒸馏框架"><span class="toc-text">2.2 知识蒸馏框架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-来源于概率分布间的知识"><span class="toc-text">2.2.1 来源于概率分布间的知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-知识蒸馏训练流程"><span class="toc-text">2.2.2 知识蒸馏训练流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-实验结果与分析"><span class="toc-text">3. 实验结果与分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-1-在AID数据集上的实验"><span class="toc-text">3.1 在AID数据集上的实验</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-2-在其他数据集上的实验"><span class="toc-text">3.2 在其他数据集上的实验</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4．结论"><span class="toc-text">4．结论</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/09/28/paper-SiCNN/" class="prev">&larr; 上一篇 一种基于卷积神经网络（CNN）的高分辨率遥感影像分类方法</a>
+  
+
+  
+
+  
+    <a href="/2018/10/18/paper-fasterrcnn4cd/" class="next">下一篇 基于Faster R-CNN的高分辨率遥感影像变化检测 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by HELOBILLY using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/helobilly.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/HELOBILLY">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/HELOBILLY">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://www.zhihu.com/people/zhu-kun-49/activities">
+        
+          <i class="icon iconfont zhihu">&#xe60b;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
